@@ -6,7 +6,10 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------
   // PWA: Service Worker, install prompt, update banner
   // -------------------------
-  if ('serviceWorker' in navigator) {
+  const isLocalDev =
+    location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+
+  if ('serviceWorker' in navigator && !isLocalDev) {
     try {
       const reg = await navigator.serviceWorker.register('sw.js');
       if (reg.waiting) handleSWWaiting(reg);

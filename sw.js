@@ -1,5 +1,6 @@
-//update notif test v7
-const CACHE_NAME = 'ordering-app-v1';
+// Bump this version whenever you deploy changes to HTML/JS/CSS/JSON.
+const CACHE_NAME = 'ordering-app-v2';
+
 const ASSETS_TO_CACHE = [
   'order.html',
   'pastOrders.html',
@@ -8,10 +9,8 @@ const ASSETS_TO_CACHE = [
   'menuData.json',
   'main.css',
   'manifest.json',
-  // optional vendor files (place them under assets/ before going offline)
   'assets/tailwind.min.css',
   'assets/fonts.css',
-  // local font files (ensure these match files in assets/fonts/)
   'assets/fonts/Vazirmatn-Thin.ttf',
   'assets/fonts/Vazirmatn-ExtraLight.ttf',
   'assets/fonts/Vazirmatn-Light.ttf',
@@ -22,15 +21,15 @@ const ASSETS_TO_CACHE = [
   'assets/fonts/Vazirmatn-ExtraBold.ttf',
   'assets/fonts/Vazirmatn-Black.ttf',
   'assets/icons/icon-192.png',
-  'assets/icons/icon-512.png'
+  'assets/icons/icon-512.png',
 ];
+
+const APP_ASSETS = new Set(ASSETS_TO_CACHE);
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE))
   );
-  // Do NOT call skipWaiting() here — we want the new worker to stay "waiting"
-  // so the page can show the update banner. User clicks "بروزرسانی" → postMessage('SKIP_WAITING') → then we skipWaiting() in the 'message' handler.
 });
 
 self.addEventListener('activate', (event) => {
@@ -45,31 +44,62 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-self.addEventListener('fetch', (event) => {
-  const req = event.request;
+function cachePathname(url) {
+  try {
+    return new URL(url).pathname.replace(/^\//, '');
+  } catch {
+    return '';
+  }
+}
 
-  // navigation requests: try network first, then cached requested URL, then order.html
-  if (req.mode === 'navigate') {
-    event.respondWith(
-      fetch(req).catch(() =>
-        caches.match(req).then((cached) => cached || caches.match('order.html'))
-      )
-    );
+function isAppAsset(request) {
+  if (request.method !== 'GET') return false;
+  const path = cachePathname(request.url);
+  return APP_ASSETS.has(path);
+}
+
+async function networkFirst(request) {
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      const copy = response.clone();
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request, copy);
+    }
+    return response;
+  } catch {
+    const cached = await caches.match(request);
+    if (cached) return cached;
+    if (request.mode === 'navigate') {
+      return caches.match('order.html');
+    }
+    throw new Error('Offline and not cached');
+  }
+}
+
+async function cacheFirst(request) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+
+  const response = await fetch(request);
+  if (response.ok) {
+    const copy = response.clone();
+    const cache = await caches.open(CACHE_NAME);
+    cache.put(request, copy);
+  }
+  return response;
+}
+
+self.addEventListener('fetch', (event) => {
+  const { request } = event;
+  if (request.method !== 'GET') return;
+
+  if (isAppAsset(request) || request.mode === 'navigate') {
+    event.respondWith(networkFirst(request));
     return;
   }
 
-  // other requests: cache-first
-  event.respondWith(
-    caches.match(req).then((cached) => cached || fetch(req).then((res) => {
-      // populate cache for future
-      const copy = res.clone();
-      caches.open(CACHE_NAME).then((cache) => cache.put(req, copy));
-      return res;
-    }).catch(() => {
-      // final fallback: try a cached file
-      return caches.match('order.html');
-    }))
-  );
+  event.respondWith(cacheFirst(request));
 });
 
 self.addEventListener('message', (event) => {
