@@ -57,26 +57,35 @@ document.addEventListener("DOMContentLoaded", async () => {
   const orderList = document.getElementById("orderList");
   const orderNumberEl = document.getElementById("orderNumber");
 
-  let menuData = { ramens: [], toppings: [], others: [] };
+  let menuData = { ramens: [], toppings: [], salads: [], others: [] };
   let currentOrder = [];
   let selectedRamen = null;
 
   let selectedExtras = {
     toppings: {},
+    salads: {},
     others: {},
   };
 
   // -------------------------
   // Order number & date
   // -------------------------
-  let savedOrderNumber = parseInt(localStorage.getItem("orderNumber") || "1");
+  let savedOrderNumber = parseInt(localStorage.getItem("orderNumber") || "101");
   let savedDate = localStorage.getItem("orderDate");
-  const today = new Date().toISOString().split("T")[0];
+  // Business day: if current local time is before 05:00, treat it as previous day
+  const now = new Date();
+  const hour = now.getHours();
+  const businessDate = (function () {
+    if (hour >= 5) return now.toISOString().split("T")[0];
+    const y = new Date(now);
+    y.setDate(y.getDate() - 1);
+    return y.toISOString().split("T")[0];
+  })();
 
-  if (savedDate !== today) {
-    savedOrderNumber = 1;
-    localStorage.setItem("orderNumber", "1");
-    localStorage.setItem("orderDate", today);
+  if (savedDate !== businessDate) {
+    savedOrderNumber = 101;
+    localStorage.setItem("orderNumber", "101");
+    localStorage.setItem("orderDate", businessDate);
   }
 
   let orderNumber = savedOrderNumber;
@@ -98,10 +107,38 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   menuData.ramens = data.ramens || [];
   menuData.toppings = data.toppings || [];
+  menuData.salads = data.salads || [];
   menuData.others = data.others || [];
 
   renderMenu();
+  // central init to ensure idempotent setup
+  function initApp() {
+    try {
+      renderMenu();
+      updateOrderList();
+      submitFoodBtn.onclick = handleAddItem;
+      submitOrderBtn.onclick = handleSubmitOrder;
+      // delegate delete button clicks to the list container so handlers survive DOM restores
+      orderList.removeEventListener('click', orderList._delegatedClickHandler || (()=>{}));
+      orderList._delegatedClickHandler = function (e) {
+        const btn = e.target.closest('.delete-btn');
+        if (!btn) return;
+        const li = btn.closest('li');
+        if (!li) return;
+        const nodes = Array.from(orderList.querySelectorAll('li'));
+        const idx = nodes.indexOf(li);
+        if (idx >= 0) {
+          currentOrder.splice(idx, 1);
+          updateOrderList();
+        }
+      };
+      orderList.addEventListener('click', orderList._delegatedClickHandler);
+    } catch (err) {
+      console.error('order.js initApp error', err);
+    }
+  }
 
+  initApp();
   // -------------------------
   // Render menu
   // -------------------------
@@ -134,6 +171,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         selectedRamen = checkbox.checked ? ramen : null;
       });
+      // reflect current selection
+      if (selectedRamen && selectedRamen.name === ramen.name) checkbox.checked = true;
 
       const info = document.createElement("div");
       info.className = "item-info flex-1";
@@ -141,6 +180,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="item-name">${ramen.name}</div>
         <div class="item-price">${formatCurrency(ramen.price)}</div>
       `;
+
+      // mark as ramen card for DOM-based reads
+      label.dataset.key = 'ramen';
+      label.dataset.name = ramen.name;
 
       label.append(checkbox, info);
       ramenList.appendChild(label);
@@ -160,6 +203,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       items.forEach((item) => {
         const card = document.createElement("div");
         card.className = "item-card min-w-[180px]";
+        card.dataset.key = key;
+        card.dataset.name = item.name;
 
         const controls = document.createElement("div");
         controls.className = "item-controls";
@@ -192,6 +237,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         minus.onclick = () => update(-1);
         plus.onclick = () => update(1);
 
+        // show existing qty if any
+        qty.textContent = selectedExtras[key][item.name] || 0;
+
         // put controls in front of info (visually 'in front' of name)
         controls.append(plus, qty, minus);
         card.append(controls, info);
@@ -203,40 +251,84 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     renderExtras("تاپینگ‌ها", menuData.toppings, "toppings");
+    renderExtras("سالادها", menuData.salads, "salads");
     renderExtras("موارد دیگر", menuData.others, "others");
 
     menuContainer.appendChild(section);
   }
 
   // -------------------------
-  // Add item
+  // Handlers
   // -------------------------
-  submitFoodBtn.onclick = () => {
+  function handleAddItem() {
+    // Read selected ramen from DOM to avoid stale in-memory state
+    const checked = document.querySelector('input[name="ramen"]:checked');
+    if (!checked) return alert("لطفا یک رامن انتخاب کنید.");
+    const ramenCard = checked.closest('.item-card') || checked.parentElement;
+    const ramenName = ramenCard.dataset.name || ramenCard.querySelector('.item-name')?.textContent?.trim();
+    const ramenObj = menuData.ramens.find((r) => r.name === ramenName) || null;
+
     let extras = [];
     let extrasTotal = 0;
 
-    ["toppings", "others"].forEach((k) => {
-      Object.entries(selectedExtras[k]).forEach(([name, qty]) => {
-        const price = getPrice(menuData[k], name);
+    // Gather extras by reading DOM qtys so we don't rely on possibly stale JS state
+    document.querySelectorAll('.item-card[data-key]').forEach((card) => {
+      const key = card.dataset.key;
+      if (key === 'ramen') return;
+      const name = card.dataset.name || card.querySelector('.item-name')?.textContent?.trim();
+      const qtyEl = card.querySelector('.qty');
+      const qty = qtyEl ? parseInt(qtyEl.textContent, 10) || 0 : 0;
+      if (qty > 0) {
+        const price = getPrice(menuData[key], name);
         extras.push({ name, qty, price });
         extrasTotal += qty * price;
-      });
+      }
     });
 
-    const ramenPrice = selectedRamen ? selectedRamen.price : 0;
+    const ramenPrice = ramenObj ? ramenObj.price : 0;
     const itemTotal = ramenPrice + extrasTotal;
 
     currentOrder.push({
-      ramen: selectedRamen ? selectedRamen.name : null,
+      ramen: ramenName,
       ramenPrice,
       extras,
       itemTotal,
     });
 
-    selectedExtras = { toppings: {}, others: {} };
+    // reset selectedExtras store and re-render UI
+    selectedExtras = { toppings: {}, salads: {}, others: {} };
     renderMenu();
     updateOrderList();
-  };
+  }
+
+  function handleSubmitOrder() {
+    if (!currentOrder.length) return alert("سفارشی ثبت نشده است.");
+
+    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+
+    orders.push({
+      orderNumber,
+      items: currentOrder,
+      total: currentOrder.reduce((s, i) => s + i.itemTotal, 0),
+      date: new Date().toLocaleString("fa-IR"),
+      dateIso: new Date().toISOString().split("T")[0],
+    });
+
+    localStorage.setItem("orders", JSON.stringify(orders));
+
+    orderNumber++;
+    localStorage.setItem("orderNumber", orderNumber);
+    localStorage.setItem("orderDate", businessDate);
+    orderNumberEl.textContent = orderNumber;
+
+    currentOrder = [];
+    updateOrderList();
+    alert("سفارش با موفقیت ثبت شد ✅");
+  }
+
+  // attach handlers initially
+  submitFoodBtn.onclick = handleAddItem;
+  submitOrderBtn.onclick = handleSubmitOrder;
 
   // -------------------------
   // Order list
@@ -260,26 +352,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         : extrasText;
 
       const li = document.createElement("li");
-      li.className =
-        "flex justify-between items-start bg-gray-50 p-3 rounded";
+      li.className = "flex justify-between items-start bg-gray-50 p-3 rounded";
 
       li.innerHTML = `
         <div>
           <strong>${foodLabel}</strong>
-          ${
-            allItems
-              ? `<div class="text-xs text-gray-600">(${allItems})</div>`
-              : ""
-          }
+          ${allItems ? `<div class="text-xs text-gray-600">(${allItems})</div>` : ""}
         </div>
         <div class="flex gap-3 items-center">
           <span>${formatCurrency(item.itemTotal)}</span>
-          <button class="text-red-600">🗑️</button>
+          <button class="delete-btn text-red-600">🗑️</button>
         </div>
       `;
 
-      li.querySelector("button").onclick = () => {
-        currentOrder.splice(i, 1);
+      li.querySelector(".delete-btn").onclick = () => {
+        currentOrder.splice(itemIndex, 1);
         updateOrderList();
       };
 
@@ -294,30 +381,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // -------------------------
-  // Submit order
-  // -------------------------
-  submitOrderBtn.onclick = () => {
-    if (!currentOrder.length) return alert("سفارشی ثبت نشده است.");
+  // (submit handler is defined via `handleSubmitOrder` above)
 
-    const orders = JSON.parse(localStorage.getItem("orders")) || [];
+  // Fix for browsers' back/forward cache: when page is restored from bfcache
+  // event handlers and in-memory state can be stale. Reload to ensure fresh init.
+  window.addEventListener("pageshow", (e) => {
+    // Reload when page is restored from bfcache or when navigation type is back/forward.
+    let navType = null;
+    try {
+      const navEntry = performance.getEntriesByType && performance.getEntriesByType('navigation') && performance.getEntriesByType('navigation')[0];
+      navType = navEntry ? navEntry.type : null;
+    } catch (err) {
+      navType = null;
+    }
 
-    orders.push({
-      orderNumber,
-      items: currentOrder,
-      total: currentOrder.reduce((s, i) => s + i.itemTotal, 0),
-      date: new Date().toLocaleString("fa-IR"),
-    });
+    const isBackForward = e.persisted || navType === 'back_forward' || (performance.navigation && performance.navigation.type === 2);
+    if (isBackForward) {
+      window.location.reload();
+      return;
+    }
 
-    localStorage.setItem("orders", JSON.stringify(orders));
+    // otherwise ensure UI reflects current in-memory data and rebind handlers
+    initApp();
+  });
 
-    orderNumber++;
-    localStorage.setItem("orderNumber", orderNumber);
-    localStorage.setItem("orderDate", today);
-    orderNumberEl.textContent = orderNumber;
-
-    currentOrder = [];
-    updateOrderList();
-    alert("سفارش با موفقیت ثبت شد ✅");
-  };
+  // Also rebind handlers when tab becomes visible (covers some navigation cases)
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") initApp();
+  });
 });
