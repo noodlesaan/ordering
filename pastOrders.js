@@ -54,6 +54,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (btn) btn.onclick = () => { reg.waiting.postMessage('SKIP_WAITING'); };
   }
 
+  // Clear yesterday's orders when a new business day starts (5 AM rollover).
+  BusinessDay.applyBusinessDayReset();
+
   // -------------------------
   // Helpers
   // -------------------------
@@ -95,7 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------
   function openDaySummaryPrint() {
     const rawOrders = JSON.parse(localStorage.getItem("orders")) || [];
-    const todayIso = new Date().toISOString().split("T")[0];
+    const todayIso = BusinessDay.getBusinessDate();
 
     // Filter today's orders using dateIso when available, fallback to parsing date string
     const todays = rawOrders.filter((o) => {
@@ -103,7 +106,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (o.date) {
         const parsed = Date.parse(o.date);
         if (!Number.isNaN(parsed)) {
-          return new Date(parsed).toISOString().split("T")[0] === todayIso;
+          return BusinessDay.getBusinessDate(new Date(parsed)) === todayIso;
         }
       }
       return false;

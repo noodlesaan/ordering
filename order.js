@@ -71,27 +71,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   };
 
   // -------------------------
-  // Order number & date
+  // Order number & date (5 AM business-day rollover)
   // -------------------------
-  let savedOrderNumber = parseInt(localStorage.getItem("orderNumber") || "101");
-  let savedDate = localStorage.getItem("orderDate");
-  // Business day: if current local time is before 05:00, treat it as previous day
-  const now = new Date();
-  const hour = now.getHours();
-  const businessDate = (function () {
-    if (hour >= 5) return now.toISOString().split("T")[0];
-    const y = new Date(now);
-    y.setDate(y.getDate() - 1);
-    return y.toISOString().split("T")[0];
-  })();
+  const { businessDate, orderNumber: initialOrderNumber } =
+    BusinessDay.applyBusinessDayReset();
 
-  if (savedDate !== businessDate) {
-    savedOrderNumber = 101;
-    localStorage.setItem("orderNumber", "101");
-    localStorage.setItem("orderDate", businessDate);
-  }
-
-  let orderNumber = savedOrderNumber;
+  let orderNumber = initialOrderNumber;
   orderNumberEl.textContent = orderNumber;
 
   // -------------------------
@@ -314,7 +299,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       items: currentOrder,
       total: currentOrder.reduce((s, i) => s + i.itemTotal, 0),
       date: new Date().toLocaleString("fa-IR"),
-      dateIso: new Date().toISOString().split("T")[0],
+      dateIso: BusinessDay.getBusinessDate(),
     });
 
     localStorage.setItem("orders", JSON.stringify(orders));
