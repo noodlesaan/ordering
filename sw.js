@@ -4,6 +4,7 @@ const CACHE_NAME = 'ordering-app-v3';
 const ASSETS_TO_CACHE = [
   'order.html',
   'pastOrders.html',
+  'app-version.js',
   'businessDay.js',
   'order.js',
   'pastOrders.js',
