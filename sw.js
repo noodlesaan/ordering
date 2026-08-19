@@ -1,5 +1,5 @@
 // Bump this version whenever you deploy changes to HTML/JS/CSS/JSON.
-const CACHE_NAME = 'ordering-app-v4';
+const CACHE_NAME = 'ordering-app-v5';
 
 const ASSETS_TO_CACHE = [
   'index.html',
@@ -27,11 +27,11 @@ const ASSETS_TO_CACHE = [
   'assets/icons/icon-512.png',
 ];
 
-const APP_ASSETS = new Set(ASSETS_TO_CACHE);
-
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS_TO_CACHE))
+    caches.open(CACHE_NAME)
+      .then((cache) => cache.addAll(ASSETS_TO_CACHE))
+      .then(() => self.skipWaiting())
   );
 });
 
@@ -47,20 +47,6 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-function cachePathname(url) {
-  try {
-    return new URL(url).pathname.replace(/^\//, '');
-  } catch {
-    return '';
-  }
-}
-
-function isAppAsset(request) {
-  if (request.method !== 'GET') return false;
-  const path = cachePathname(request.url);
-  return APP_ASSETS.has(path);
-}
-
 async function networkFirst(request) {
   try {
     const response = await fetch(request);
@@ -71,38 +57,21 @@ async function networkFirst(request) {
     }
     return response;
   } catch {
-    const cached = await caches.match(request);
+    const cached = await caches.match(request, { ignoreSearch: true });
     if (cached) return cached;
     if (request.mode === 'navigate') {
-      return caches.match('404.html');
+      return caches.match(new URL('404.html', self.registration.scope).href);
     }
     throw new Error('Offline and not cached');
   }
-}
-
-async function cacheFirst(request) {
-  const cached = await caches.match(request);
-  if (cached) return cached;
-
-  const response = await fetch(request);
-  if (response.ok) {
-    const copy = response.clone();
-    const cache = await caches.open(CACHE_NAME);
-    cache.put(request, copy);
-  }
-  return response;
 }
 
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   if (request.method !== 'GET') return;
 
-  if (isAppAsset(request) || request.mode === 'navigate') {
-    event.respondWith(networkFirst(request));
-    return;
-  }
-
-  event.respondWith(cacheFirst(request));
+  // Always prefer deployed files. Cache is only an offline fallback.
+  event.respondWith(networkFirst(request));
 });
 
 self.addEventListener('message', (event) => {
