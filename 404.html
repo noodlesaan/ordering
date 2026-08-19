@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f766e" />
+    <title>صفحه پیدا نشد | سیستم ثبت سفارش</title>
+    <link rel="stylesheet" href="assets/fonts.css" />
+    <link rel="stylesheet" href="./main.css" />
+  </head>
+  <body class="not-found-page">
+    <main class="not-found" aria-labelledby="not-found-title">
+      <div class="not-found-mark" aria-hidden="true">۴۰۴</div>
+      <p class="not-found-kicker">آدرس اشتباه است</p>
+      <h1 id="not-found-title">این صفحه پیدا نشد</h1>
+      <p class="not-found-copy">
+        صفحه‌ای که دنبال آن هستید وجود ندارد یا ممکن است جابه‌جا شده باشد.
+      </p>
+      <p id="requestedPath" class="not-found-path" hidden></p>
+      <nav class="not-found-actions" aria-label="پیوندهای صفحه">
+        <a class="not-found-primary" href="index.html">بازگشت به ثبت سفارش</a>
+        <a class="not-found-secondary" href="pastOrders.html">مشاهده سفارش‌های قبلی</a>
+      </nav>
+    </main>
+
+    <script>
+      const requestedPath = document.getElementById('requestedPath');
+      const path = window.location.pathname;
+
+      if (path && path !== '/' && path !== '/404.html') {
+        requestedPath.textContent = `آدرس واردشده: ${path}`;
+        requestedPath.hidden = false;
+      }
+    </script>
+  </body>
+</html>

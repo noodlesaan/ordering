@@ -2,7 +2,7 @@
   "name": "سیستم ثبت سفارش",
   "short_name": "سفارش",
   "lang": "fa-IR",
-  "start_url": "order.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f3f4f6",
   "theme_color": "#0ea5e9",

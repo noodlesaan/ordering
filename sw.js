@@ -1,8 +1,9 @@
 // Bump this version whenever you deploy changes to HTML/JS/CSS/JSON.
-const CACHE_NAME = 'ordering-app-v3';
+const CACHE_NAME = 'ordering-app-v4';
 
 const ASSETS_TO_CACHE = [
-  'order.html',
+  'index.html',
+  '404.html',
   'pastOrders.html',
   'app-version.js',
   'businessDay.js',
@@ -73,7 +74,7 @@ async function networkFirst(request) {
     const cached = await caches.match(request);
     if (cached) return cached;
     if (request.mode === 'navigate') {
-      return caches.match('order.html');
+      return caches.match('404.html');
     }
     throw new Error('Offline and not cached');
   }
