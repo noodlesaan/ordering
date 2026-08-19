@@ -179,7 +179,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       <div class="text-sm my-2">تاریخ: ${dateStr}</div>
       <div class="text-sm my-2">ساعت: ${timeStr}</div>
       <div class="text-sm my-2">تعداد کل سفارشات روز: ${totalOrders}</div>
-      <div class="text-sm my-2">مجموع پرداختی های روز: ${totalSum}</div>
+      <div class="text-sm my-2">مجموع پرداختی های روز: ${totalSum} تومان</div>
       <div class="text-sm my-2">پرفروش ترین های روز: ${topItemsLine}</div>
     `;
 
