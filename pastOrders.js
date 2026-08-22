@@ -85,7 +85,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     "فوجی سالاد": "Fuji Salad",
     "وجی سالاد": "Veggie Salad",
     "آب": "Water",
-    "نوشابه": "Soda",
+    "اسپرایت": "Sprite",
+    "کوکا": "Coca",
+    "فانتا": "Fanta",
     "کیمچی": "Kimchi",
   };
 
