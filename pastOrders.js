@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const fingilishMap = {
     "رامن گوشت": "Ramen Goosht",
     "رامن مرغ": "Ramen Morgh",
-    "رامن مرغ، سیب زمینی و خامه": "Ramen Morgh (Potato & Cream)",
+    "رامن مرغ و خامه": "Ramen Morgh (+ Potato & Cream)",
     "رامن سس کیکو": "Ramen (Kiko Sauce)",
     "رامن سس بنجی": "Ramen (Benji Sauce)",
     "رامن سس وایتی": "Ramen (Waity Sauce)",
