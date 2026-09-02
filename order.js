@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  Services.setAppVersion();
+
   // --- Service Worker registration and PWA install/update handling ---
   const isLocalDev =
     location.hostname === 'localhost' || location.hostname === '127.0.0.1';

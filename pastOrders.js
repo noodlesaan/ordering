@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  Services.setAppVersion();
+
   const pastOrdersContainer = document.getElementById("pastOrdersContainer");
   const noOrdersMsg = document.getElementById("noOrders");
   const printDaySummaryBtn = document.getElementById("printDaySummaryBtn");
