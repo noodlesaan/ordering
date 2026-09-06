@@ -66,10 +66,6 @@
   };
 
   window.Services = Services;
-  window.BusinessDay = {
-    getBusinessDate,
-    applyBusinessDayReset,
-  };
 
   document.addEventListener("DOMContentLoaded", () => {
     setAppVersion();
