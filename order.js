@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  Services.setAppVersion();
+
   // --- Service Worker registration and PWA install/update handling ---
   const isLocalDev =
     location.hostname === 'localhost' || location.hostname === '127.0.0.1';
@@ -74,7 +76,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Order number & date (5 AM business-day rollover)
   // -------------------------
   const { businessDate, orderNumber: initialOrderNumber } =
-    BusinessDay.applyBusinessDayReset();
+    Services.applyBusinessDayReset();
 
   let orderNumber = initialOrderNumber;
   orderNumberEl.textContent = orderNumber;
@@ -299,7 +301,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       items: currentOrder,
       total: currentOrder.reduce((s, i) => s + i.itemTotal, 0),
       date: new Date().toLocaleString("fa-IR"),
-      dateIso: BusinessDay.getBusinessDate(),
+      dateIso: Services.getBusinessDate(),
     });
 
     localStorage.setItem("orders", JSON.stringify(orders));

@@ -1,4 +1,5 @@
 (function () {
+  const APP_VERSION = "1.0.1";
   const BUSINESS_DAY_START_HOUR = 5;
 
   function formatLocalDate(date) {
@@ -50,8 +51,23 @@
     };
   }
 
-  window.BusinessDay = {
+  function setAppVersion() {
+    document.querySelectorAll("[data-app-version]").forEach((element) => {
+      element.textContent = `نسخه ${APP_VERSION}`;
+    });
+  }
+
+  const Services = {
+    APP_VERSION,
+    formatLocalDate,
     getBusinessDate,
     applyBusinessDayReset,
+    setAppVersion,
   };
+
+  window.Services = Services;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    setAppVersion();
+  });
 })();

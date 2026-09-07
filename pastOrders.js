@@ -1,4 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  Services.setAppVersion();
+
   const pastOrdersContainer = document.getElementById("pastOrdersContainer");
   const noOrdersMsg = document.getElementById("noOrders");
   const printDaySummaryBtn = document.getElementById("printDaySummaryBtn");
@@ -55,7 +57,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   // Clear yesterday's orders when a new business day starts (5 AM rollover).
-  BusinessDay.applyBusinessDayReset();
+  Services.applyBusinessDayReset();
 
   // -------------------------
   // Helpers
@@ -100,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------
   function openDaySummaryPrint() {
     const rawOrders = JSON.parse(localStorage.getItem("orders")) || [];
-    const todayIso = BusinessDay.getBusinessDate();
+    const todayIso = Services.getBusinessDate();
 
     // Filter today's orders using dateIso when available, fallback to parsing date string
     const todays = rawOrders.filter((o) => {
@@ -108,7 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (o.date) {
         const parsed = Date.parse(o.date);
         if (!Number.isNaN(parsed)) {
-          return BusinessDay.getBusinessDate(new Date(parsed)) === todayIso;
+          return Services.getBusinessDate(new Date(parsed)) === todayIso;
         }
       }
       return false;
