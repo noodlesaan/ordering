@@ -362,22 +362,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     totalEl.className = "font-bold text-green-700";
     totalEl.innerHTML = `مجموع سفارش: ${formatCurrency(totalCost)}`;
 
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className =
-      "text-white hover:bg-red-300 text-sm font-medium bg-red-600 p-3 rounded-lg";
-    deleteBtn.textContent = "🗑️ حذف سفارش";
-
-    deleteBtn.onclick = () => {
-      if (!confirm("آیا از حذف این سفارش مطمئن هستید؟")) return;
-
-      const stored = JSON.parse(localStorage.getItem("orders")) || [];
-      stored.splice(orderIndex, 1);
-      localStorage.setItem("orders", JSON.stringify(stored));
-
-      card.remove();
-      if (!stored.length && noOrdersMsg) noOrdersMsg.classList.remove("hidden");
-    };
-
     const printBtn = document.createElement("button");
     printBtn.className =
       "text-white bg-blue-600 hover:bg-blue-400 text-sm font-medium p-3 rounded-lg";
@@ -385,7 +369,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     printBtn.onclick = () => openPrintModal(order);
 
-    footer.append(totalEl, printBtn, deleteBtn);
+    footer.append(totalEl, printBtn);
 
     card.appendChild(footer);
 
