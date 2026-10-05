@@ -231,6 +231,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   // Main
   // -------------------------
   const rawOrders = JSON.parse(localStorage.getItem("orders")) || [];
+  const requestedPrintOrderNumber = new URLSearchParams(location.search).get("print");
 
   if (!rawOrders.length) {
     if (noOrdersMsg) noOrdersMsg.classList.remove("hidden");
@@ -374,6 +375,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     card.appendChild(footer);
 
     pastOrdersContainer.appendChild(card);
+
+    if (String(order.orderNumber) === requestedPrintOrderNumber) {
+      openPrintModal(order);
+    }
 
     function openPrintModal(order) {
       let margin = 20;

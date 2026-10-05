@@ -59,6 +59,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   const menuContainer = document.getElementById("menuContainer");
   const submitFoodBtn = document.getElementById("submitFood");
   const submitOrderBtn = document.getElementById("submitOrder");
+  const submitConfirmation = document.getElementById("submitConfirmation");
+  const confirmSubmitOrderBtn = document.getElementById("confirmSubmitOrder");
+  const cancelSubmitOrderBtn = document.getElementById("cancelSubmitOrder");
   const orderList = document.getElementById("orderList");
   const orderNumberEl = document.getElementById("orderNumber");
 
@@ -108,6 +111,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateOrderList();
       submitFoodBtn.onclick = handleAddItem;
       submitOrderBtn.onclick = handleSubmitOrder;
+      confirmSubmitOrderBtn.onclick = confirmOrderSubmission;
+      cancelSubmitOrderBtn.onclick = () => submitConfirmation.classList.add("hidden");
       // delegate delete button clicks to the list container so handlers survive DOM restores
       orderList.removeEventListener('click', orderList._delegatedClickHandler || (()=>{}));
       orderList._delegatedClickHandler = function (e) {
@@ -293,7 +298,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function handleSubmitOrder() {
     if (!currentOrder.length) return alert("سفارشی ثبت نشده است.");
+    confirmSubmitOrderBtn.disabled = false;
+    submitConfirmation.classList.remove("hidden");
+  }
 
+  function confirmOrderSubmission() {
+    if (confirmSubmitOrderBtn.disabled) return;
+    confirmSubmitOrderBtn.disabled = true;
+    submitConfirmation.classList.add("hidden");
     const orders = JSON.parse(localStorage.getItem("orders")) || [];
 
     orders.push({
@@ -313,7 +325,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     currentOrder = [];
     updateOrderList();
-    alert("سفارش با موفقیت ثبت شد ✅");
+    window.location.href = `pastOrders.html?print=${encodeURIComponent(orderNumber - 1)}`;
   }
 
   // attach handlers initially
