@@ -1,3 +1,65 @@
+.confirmation-dialog {
+  width: min(100%, 28rem);
+  margin: 1.5rem;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  background: #fff;
+  border: 2px solid #0f766e;
+  border-radius: 0.5rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.24);
+}
+
+.confirmation-title {
+  margin: 0;
+  padding: 0.5rem 0.75rem 1.1rem;
+  border-bottom: 1px solid #d1d5db;
+  color: #111827;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.9;
+  text-align: center;
+}
+
+.confirmation-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+  padding: 0 0.5rem 0.25rem;
+}
+
+.confirmation-button {
+  min-width: 6rem;
+  padding: 0.65rem 1.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  color: #fff;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.confirmation-button:hover {
+  transform: translateY(-1px);
+}
+
+.confirmation-button--confirm {
+  background: #059669;
+}
+
+.confirmation-button--confirm:hover {
+  background: #047857;
+}
+
+.confirmation-button--cancel {
+  background: #dc2626;
+}
+
+.confirmation-button--cancel:hover {
+  background: #b91c1c;
+}
+
 .print-preview {
   --print-margin: 20mm;
   width: 210mm;
