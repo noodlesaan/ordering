@@ -246,7 +246,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     renderExtras("تاپینگ‌ها", menuData.toppings, "toppings");
-    renderExtras("سالادها", menuData.salads, "salads");
+    //renderExtras("سالادها", menuData.salads, "salads");
     renderExtras("موارد دیگر", menuData.others, "others");
 
     menuContainer.appendChild(section);
