@@ -141,7 +141,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const timeStr = new Date().toLocaleTimeString("fa-IR", { hour: '2-digit', minute: '2-digit' });
 
     // Build modal (similar to openPrintModal)
-    let margin = 20;
+    let margin = 5;
     const backdrop = document.createElement("div");
     backdrop.className = "fixed inset-0 bg-black/50 z-50 flex items-center justify-center";
 
@@ -381,7 +381,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function openPrintModal(order) {
-      let margin = 20;
+      let margin = 5;
 
       // Modal backdrop
       const backdrop = document.createElement("div");
