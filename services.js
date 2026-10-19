@@ -1,5 +1,5 @@
 (function () {
-  const APP_VERSION = "1.0.6";
+  const APP_VERSION = "1.0.7";
   const BUSINESS_DAY_START_HOUR = 5;
 
   function formatLocalDate(date) {
