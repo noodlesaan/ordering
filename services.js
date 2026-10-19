@@ -1,5 +1,5 @@
 (function () {
-  const APP_VERSION = "1.0.6";
+  const APP_VERSION = "1.0.7";
   const BUSINESS_DAY_START_HOUR = 5;
 
   function formatLocalDate(date) {
@@ -22,12 +22,12 @@
     const savedDate = localStorage.getItem("orderDate");
 
     if (savedDate !== businessDate) {
-      localStorage.setItem("orderNumber", "101");
+      localStorage.setItem("orderNumber", "111");
       localStorage.setItem("orderDate", businessDate);
       localStorage.setItem("orders", "[]");
       return {
         businessDate,
-        orderNumber: 101,
+        orderNumber: 111,
         ordersCleared: true,
       };
     }
@@ -39,14 +39,14 @@
       localStorage.setItem("orders", JSON.stringify(todaysOrders));
       return {
         businessDate,
-        orderNumber: parseInt(localStorage.getItem("orderNumber") || "101", 10),
+        orderNumber: parseInt(localStorage.getItem("orderNumber") || "111", 10),
         ordersCleared: true,
       };
     }
 
     return {
       businessDate,
-      orderNumber: parseInt(localStorage.getItem("orderNumber") || "101", 10),
+      orderNumber: parseInt(localStorage.getItem("orderNumber") || "111", 10),
       ordersCleared: false,
     };
   }
