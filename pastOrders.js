@@ -195,6 +195,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     modal.appendChild(previewContainer);
     backdrop.appendChild(modal);
     document.body.appendChild(backdrop);
+    backdrop.dataset.printModal = "summary";
 
     function applyMargin() {
       paperPreview.style.padding = `${margin}mm`;
@@ -206,20 +207,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     header.querySelector("#closeModal").onclick = () => backdrop.remove();
 
+    
     controls.querySelector("#printNow").onclick = () => {
-      previewContainer.style.backgroundColor = "white";
-      previewContainer.style.padding = "0";
-      previewContainer.style.display = "flex";
-      modal.style.boxShadow = "none";
-      modal.style.borderRadius = "0";
+      document.querySelectorAll("body > [data-print-active]")
+        .forEach((el) => el.removeAttribute("data-print-active"));
+
+      backdrop.setAttribute("data-print-active", "true");
 
       window.print();
-
-      setTimeout(() => {
-        previewContainer.style.backgroundColor = "#e5e7eb";
-        previewContainer.style.padding = "1rem";
-      }, 100);
     };
+
 
     controls.querySelector("#marginPlus").onclick = () => { margin += 5; applyMargin(); };
     controls.querySelector("#marginMinus").onclick = () => { margin = Math.max(5, margin - 5); applyMargin(); };
