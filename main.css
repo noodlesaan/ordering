@@ -67,17 +67,22 @@
   box-sizing: border-box;
 }
 
+
 @media print {
-  body * {
-    visibility: hidden;
+  body > * {
+    display: none !important;
   }
 
-  .print-preview,
-  .print-preview * {
-    visibility: visible;
+  body > [data-print-active="true"] {
+    display: flex !important;
   }
 
-  .print-preview {
+  body > [data-print-active="true"] .print-preview,
+  body > [data-print-active="true"] .print-preview * {
+    visibility: visible !important;
+  }
+
+  body > [data-print-active="true"] .print-preview {
     position: absolute;
     inset: 0;
     width: 100%;
