@@ -471,6 +471,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       modal.appendChild(previewContainer);
       backdrop.appendChild(modal);
       document.body.appendChild(backdrop);
+      backdrop.dataset.printModal = "order";
 
       // Update margin display and preview
       function applyMargin() {
@@ -484,22 +485,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Event listeners
       header.querySelector("#closeModal").onclick = () => backdrop.remove();
 
+      
       controls.querySelector("#printNow").onclick = () => {
-        // Hide preview container background and reset for print
-        previewContainer.style.backgroundColor = "white";
-        previewContainer.style.padding = "0";
-        previewContainer.style.display = "flex";
-        modal.style.boxShadow = "none";
-        modal.style.borderRadius = "0";
-        
+        document.querySelectorAll("body > [data-print-active]")
+          .forEach((el) => el.removeAttribute("data-print-active"));
+
+        backdrop.setAttribute("data-print-active", "true");
+
         window.print();
-        
-        // Restore after print dialog closes
-        setTimeout(() => {
-          previewContainer.style.backgroundColor = "#e5e7eb";
-          previewContainer.style.padding = "1rem";
-        }, 100);
       };
+
 
       controls.querySelector("#marginPlus").onclick = () => {
         margin += 5;
