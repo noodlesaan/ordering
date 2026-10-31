@@ -260,14 +260,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Ramen is optional
     const checked = document.querySelector('input[name="ramen"]:checked');
 
-    const ramenName = checked
-      ? (checked.closest('.item-card') || checked.parentElement)
-          .dataset.name
-      : null;
+    const ramenName = checked ? (checked.closest('.item-card') || checked.parentElement).dataset.name : null;
 
-    const ramenObj = ramenName
-      ? menuData.ramens.find((r) => r.name === ramenName) || null
-      : null;
+    const ramenObj = ramenName ? menuData.ramens.find((r) => r.name === ramenName) || null : null;
 
     let extras = [];
     let extrasTotal = 0;
@@ -275,18 +270,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Collect all selected extras
     document.querySelectorAll('.item-card[data-key]').forEach((card) => {
       const key = card.dataset.key;
-
       if (key === 'ramen') return;
 
       const name = card.dataset.name;
       const qtyEl = card.querySelector('.qty');
-      const qty = qtyEl
-        ? parseInt(qtyEl.textContent, 10) || 0
-        : 0;
+      const qty = qtyEl ? parseInt(qtyEl.textContent, 10) || 0 : 0;
 
       if (qty > 0) {
         const price = getPrice(menuData[key], name);
-
         extras.push({ name, qty, price });
         extrasTotal += qty * price;
       }
@@ -308,12 +299,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     // Reset selections
-    selectedExtras = {
-      toppings: {},
-      salads: {},
-      others: {}
-    };
-
+    selectedExtras = { toppings: {}, salads: {}, others: {} };
     renderMenu();
     updateOrderList();
   }
