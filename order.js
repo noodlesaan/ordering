@@ -271,11 +271,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.querySelectorAll('.item-card[data-key]').forEach((card) => {
       const key = card.dataset.key;
       if (key === 'ramen') return;
-
       const name = card.dataset.name;
       const qtyEl = card.querySelector('.qty');
       const qty = qtyEl ? parseInt(qtyEl.textContent, 10) || 0 : 0;
-
       if (qty > 0) {
         const price = getPrice(menuData[key], name);
         extras.push({ name, qty, price });
@@ -303,7 +301,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderMenu();
     updateOrderList();
   }
-
 
   function handleSubmitOrder() {
     if (!currentOrder.length) return alert("سفارشی ثبت نشده است.");
