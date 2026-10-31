@@ -1,5 +1,5 @@
 // Bump this version whenever you deploy changes to HTML/JS/CSS/JSON.
-const CACHE_NAME = 'ordering-app-v1.0.8';
+const CACHE_NAME = 'ordering-app-v1.0.9';
 
 const ASSETS_TO_CACHE = [
   'index.html',
