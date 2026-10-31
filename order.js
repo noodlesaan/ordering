@@ -255,7 +255,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------
   // Handlers
   // -------------------------
-
   function handleAddItem() {
     // Ramen is optional
     const checked = document.querySelector('input[name="ramen"]:checked');
