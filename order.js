@@ -255,30 +255,47 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------
   // Handlers
   // -------------------------
+
   function handleAddItem() {
-    // Read selected ramen from DOM to avoid stale in-memory state
+    // Ramen is optional
     const checked = document.querySelector('input[name="ramen"]:checked');
-    if (!checked) return alert("لطفا یک رامن انتخاب کنید.");
-    const ramenCard = checked.closest('.item-card') || checked.parentElement;
-    const ramenName = ramenCard.dataset.name || ramenCard.querySelector('.item-name')?.textContent?.trim();
-    const ramenObj = menuData.ramens.find((r) => r.name === ramenName) || null;
+
+    const ramenName = checked
+      ? (checked.closest('.item-card') || checked.parentElement)
+          .dataset.name
+      : null;
+
+    const ramenObj = ramenName
+      ? menuData.ramens.find((r) => r.name === ramenName) || null
+      : null;
 
     let extras = [];
     let extrasTotal = 0;
 
-    // Gather extras by reading DOM qtys so we don't rely on possibly stale JS state
+    // Collect all selected extras
     document.querySelectorAll('.item-card[data-key]').forEach((card) => {
       const key = card.dataset.key;
+
       if (key === 'ramen') return;
-      const name = card.dataset.name || card.querySelector('.item-name')?.textContent?.trim();
+
+      const name = card.dataset.name;
       const qtyEl = card.querySelector('.qty');
-      const qty = qtyEl ? parseInt(qtyEl.textContent, 10) || 0 : 0;
+      const qty = qtyEl
+        ? parseInt(qtyEl.textContent, 10) || 0
+        : 0;
+
       if (qty > 0) {
         const price = getPrice(menuData[key], name);
+
         extras.push({ name, qty, price });
         extrasTotal += qty * price;
       }
     });
+
+    // Prevent completely empty items
+    if (!ramenObj && extras.length === 0) {
+      return alert("لطفا حداقل یک مورد انتخاب کنید.");
+    }
 
     const ramenPrice = ramenObj ? ramenObj.price : 0;
     const itemTotal = ramenPrice + extrasTotal;
@@ -290,11 +307,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       itemTotal,
     });
 
-    // reset selectedExtras store and re-render UI
-    selectedExtras = { toppings: {}, salads: {}, others: {} };
+    // Reset selections
+    selectedExtras = {
+      toppings: {},
+      salads: {},
+      others: {}
+    };
+
     renderMenu();
     updateOrderList();
   }
+
 
   function handleSubmitOrder() {
     if (!currentOrder.length) return alert("سفارشی ثبت نشده است.");
