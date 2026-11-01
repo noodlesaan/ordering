@@ -430,12 +430,12 @@ document.addEventListener("DOMContentLoaded", async () => {
               const foodLabel = `food ${foodNumber}`;
               
               const ramenLine = item.ramen
-                ? `<div class="text-sm text-left">- ${toFingilish(item.ramen)}</div>`
+                ? `<div class="text-sm text-left">${toFingilish(item.ramen)} -</div>`
                 : "";
 
               const extrasLines = item.extras?.length
                 ? item.extras
-                    .map((e) => `<div class="text-sm text-left">- ${toFingilish(e.name)} ×${e.qty}</div>`)
+                    .map((e) => `<div class="text-sm text-left">${toFingilish(e.name)} ×${e.qty} -</div>`)
                     .join("")
                 : "";
 
