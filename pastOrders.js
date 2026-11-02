@@ -122,11 +122,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Count items
     const counts = {};
+
     todays.forEach((o) => {
       (o.items || []).forEach((it) => {
-        if (it.ramen) counts[it.ramen] = (counts[it.ramen] || 0) + 1;
+        if (it.ramen) {
+          counts[it.ramen] = (counts[it.ramen] || 0) + 1;
+        }
+
         if (Array.isArray(it.extras)) {
           it.extras.forEach((e) => {
+            // Exclude items belonging to the "others" category
+            if (menuData.others.some(item => item.name === e.name)) return;
+
             counts[e.name] = (counts[e.name] || 0) + (safeNumber(e.qty) || 1);
           });
         }
