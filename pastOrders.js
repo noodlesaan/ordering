@@ -124,9 +124,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const counts = {};
     todays.forEach((o) => {
       (o.items || []).forEach((it) => {
-        if (it.ramen) {
-          counts[it.ramen] = (counts[it.ramen] || 0) + 1;
-        }
+        if (it.ramen) counts[it.ramen] = (counts[it.ramen] || 0) + 1;
         if (Array.isArray(it.extras)) {
           it.extras.forEach((e) => {
             if (e.category !== "others") {
