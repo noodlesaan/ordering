@@ -430,7 +430,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           ${order.items
             .map((item, itemIndex) => {
               const foodNumber = itemIndex + 1;
-              const foodLabel = `food ${foodNumber}`;
+              const foodLabel = `Food ${foodNumber}`;
               
               const ramenLine = item.ramen
                 ? `<div class="text-sm text-left">${toFingilish(item.ramen)} -</div>`
