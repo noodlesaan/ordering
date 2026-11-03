@@ -129,8 +129,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         if (Array.isArray(it.extras)) {
           it.extras.forEach((e) => {
-            if (menuData.others.some(item => item.name === e.name)) return;
-            counts[e.name] = (counts[e.name] || 0) + (safeNumber(e.qty) || 1);
+            if (e.category !== "others") {
+              counts[e.name] = (counts[e.name] || 0) + (safeNumber(e.qty) || 1);
+            }
           });
         }
       });
