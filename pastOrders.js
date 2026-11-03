@@ -127,7 +127,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (it.ramen) counts[it.ramen] = (counts[it.ramen] || 0) + 1;
         if (Array.isArray(it.extras)) {
           it.extras.forEach((e) => {
-            counts[e.name] = (counts[e.name] || 0) + (safeNumber(e.qty) || 1);
+            if (e.category !== "others") {
+              counts[e.name] = (counts[e.name] || 0) + (safeNumber(e.qty) || 1);
+            }
           });
         }
       });
@@ -427,7 +429,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           ${order.items
             .map((item, itemIndex) => {
               const foodNumber = itemIndex + 1;
-              const foodLabel = `food ${foodNumber}`;
+              const foodLabel = `Food ${foodNumber}`;
               
               const ramenLine = item.ramen
                 ? `<div class="text-sm text-left">${toFingilish(item.ramen)} -</div>`

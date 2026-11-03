@@ -275,7 +275,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const qty = qtyEl ? parseInt(qtyEl.textContent, 10) || 0 : 0;
       if (qty > 0) {
         const price = getPrice(menuData[key], name);
-        extras.push({ name, qty, price });
+        extras.push({ name, qty, price, category: key });
         extrasTotal += qty * price;
       }
     });
