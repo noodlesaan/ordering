@@ -5,7 +5,7 @@ import sys
 import codecs
 
 Failed = 0
-VERSION = "0.3"
+VERSION = "1.0.11"
 
 
 SERVICE_WORKER_ITEMS = ["const CACHE_NAME = 'ordering-app-v{0}'"]
