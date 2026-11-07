@@ -48,19 +48,26 @@
       <span data-app-version class="block text-sm text-gray-500 mt-2" aria-label="نسخه برنامه"></span>
     </header>
 
-    <div class="flex flex-col items-center gap-3 mb-6">
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6">
       <a
         href="index.html"
-        class="w-64 max-w-full text-center bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+        class="w-64 max-w-full text-center bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition shadow-sm"
       >
         ← بازگشت به صفحه سفارش
       </a>
       <button
         id="printDaySummaryBtn"
         type="button"
-        class="w-64 max-w-full bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition"
+        class="w-64 max-w-full bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition shadow-sm"
       >
         🖨️ پرینت خلاصه روز
+      </button>
+      <button
+        id="exportDailyCsvBtn"
+        type="button"
+        class="w-64 max-w-full bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition shadow-sm"
+      >
+        📥 خروجی اکسل روز (CSV)
       </button>
     </div>
 
