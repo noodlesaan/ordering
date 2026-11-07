@@ -104,14 +104,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   // -------------------------
 
   function exportDailyOrdersCSV() {
-    const rawOrders = JSON.parse(localStorage.getItem("orders")) || [];
+    const rawOrders = JSON.parse(localStorage.getItem("orders") || "[]");
     const todayIso = Services.getBusinessDate();
 
-    // Get all orders belonging to the current business day
+    // Get only today's orders
     const todaysOrders = rawOrders.filter((order) => {
-      if (order.dateIso) {
-        return order.dateIso === todayIso;
-      }
+      if (order.dateIso) return order.dateIso === todayIso;
 
       if (order.date) {
         const parsed = Date.parse(order.date);
@@ -124,8 +122,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       return false;
     });
 
-    if (!todaysOrders.length) {
-      alert("هیچ سفارشی برای خروجی گرفتن وجود ندارد.");
+    if (todaysOrders.length === 0) {
+      alert("No orders found for today.");
       return;
     }
 
@@ -133,117 +131,38 @@ document.addEventListener("DOMContentLoaded", async () => {
     const headers = [
       "Order Number",
       "Order Date",
-      "Business Date",
-      "Item Number",
-      "Item Name",
-      "Extras",
-      "Quantity",
-      "Unit Price",
-      "Item Total",
       "Order Total"
     ];
 
-    const rows = [headers];
+    // Escape CSV values
+    const escapeCSV = (value) => {
+      return `"${String(value ?? "").replace(/"/g, '""')}"`;
+    };
 
-    todaysOrders.forEach((order) => {
-      const items = order.items || [];
+    // Create one CSV row per order
+    const rows = todaysOrders.map((order) => [
+      order.orderNumber ?? order.id ?? "",
+      order.date ?? order.dateIso ?? "",
+      safeNumber(order.total).toFixed(2)
+    ]);
 
-      if (!items.length) {
-        rows.push([
-          order.orderNumber ?? "",
-          order.date ?? "",
-          order.dateIso ?? todayIso,
-          "",
-          "",
-          "",
-          "",
-          "",
-          "",
-          safeNumber(order.total)
-        ]);
+    // Build CSV with UTF-8 BOM
+    const csvContent =
+      "\uFEFF" +
+      [headers, ...rows]
+        .map((row) => row.map(escapeCSV).join(","))
+        .join("\r\n");
 
-        return;
-      }
-
-      items.forEach((item, index) => {
-        const foodName = item.ramen || item.food || item.name || "";
-
-        const foodPrice =
-          safeNumber(item.ramenPrice) ||
-          safeNumber(item.foodPrice) ||
-          safeNumber(item.price);
-
-        // Support both new extras and old toppings formats
-        let extras = [];
-
-        if (Array.isArray(item.extras)) {
-          extras = item.extras;
-        } else if (Array.isArray(item.toppings)) {
-          extras = item.toppings.map((name) => ({
-            name,
-            qty: 1,
-            price: 0
-          }));
-        }
-
-        const extrasText = extras
-          .map((extra) => `${extra.name} x${safeNumber(extra.qty) || 1}`)
-          .join(" | ");
-
-        const extrasTotal = extras.reduce(
-          (sum, extra) =>
-            sum + (safeNumber(extra.qty) || 1) * safeNumber(extra.price),
-          0
-        );
-
-        const itemTotal =
-          safeNumber(item.itemTotal) || foodPrice + extrasTotal;
-
-        const itemName = foodName || extrasText || "Other";
-
-        rows.push([
-          order.orderNumber ?? "",
-          order.date ?? "",
-          order.dateIso ?? todayIso,
-          index + 1,
-          itemName,
-          extrasText,
-          1,
-          foodPrice,
-          itemTotal,
-          safeNumber(order.total)
-        ]);
-      });
+    // Create downloadable file
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;"
     });
 
-    // Escape CSV values correctly
-    const csvContent = rows
-      .map((row) =>
-        row
-          .map((value) => {
-            const text = String(value ?? "");
-            return `"${text.replace(/"/g, '""')}"`;
-          })
-          .join(",")
-      )
-      .join("\r\n");
-
-    // UTF-8 BOM ensures Persian characters display correctly in Excel
-    const BOM = "\uFEFF";
-
-    const blob = new Blob(
-      [BOM + csvContent],
-      { type: "text/csv;charset=utf-8;" }
-    );
-
     const url = URL.createObjectURL(blob);
-
-    // Filename includes the business date
-    const filename = `Daily_Orders_${todayIso}.csv`;
-
     const link = document.createElement("a");
+
     link.href = url;
-    link.download = filename;
+    link.download = `Daily_Orders_${todayIso}.csv`;
 
     document.body.appendChild(link);
     link.click();
