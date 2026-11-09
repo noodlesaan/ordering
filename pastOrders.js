@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const pastOrdersContainer = document.getElementById("pastOrdersContainer");
   const noOrdersMsg = document.getElementById("noOrders");
   const printDaySummaryBtn = document.getElementById("printDaySummaryBtn");
+  const exportDailyCsvBtn = document.getElementById("exportDailyCsvBtn");
 
   // -------------------------
   // PWA: Service Worker, install prompt, update banner
@@ -96,6 +97,71 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function toFingilish(text) {
     return fingilishMap[text] || text;
+  }
+
+  // -------------------------
+  // Export daily orders to CSV
+  // -------------------------
+
+  function exportDailyOrdersCSV() {
+    const rawOrders = JSON.parse(localStorage.getItem("orders") || "[]");
+    const todayIso = Services.getBusinessDate();
+
+    // Get only today's orders
+    const todaysOrders = rawOrders.filter((order) => {return true});
+
+    if (todaysOrders.length === 0) {
+      alert("No orders found for today.");
+      return;
+    }
+
+    // CSV columns
+    const headers = [
+      "Order Number",
+      "Order Date",
+      "Order Total"
+    ];
+
+    // Escape CSV values
+    const escapeCSV = (value) => {
+      return `"${String(value ?? "").replace(/"/g, '""')}"`;
+    };
+
+    // Create one CSV row per order
+    const rows = todaysOrders.map((order) => [
+      order.orderNumber ?? order.id ?? "",
+      order.date ?? order.dateIso ?? "",
+      safeNumber(order.total).toFixed(2)
+    ]);
+
+    // Build CSV with UTF-8 BOM
+    const csvContent =
+      "\uFEFF" +
+      [headers, ...rows]
+        .map((row) => row.map(escapeCSV).join(","))
+        .join("\r\n");
+
+    // Create downloadable file
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;"
+    });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.download = `Daily_Orders_${todayIso}.csv`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  }
+
+  // Attach CSV export button
+  if (exportDailyCsvBtn) {
+    exportDailyCsvBtn.addEventListener("click", exportDailyOrdersCSV);
   }
 
   // -------------------------
