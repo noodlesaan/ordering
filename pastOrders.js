@@ -108,19 +108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const todayIso = Services.getBusinessDate();
 
     // Get only today's orders
-    const todaysOrders = rawOrders.filter((order) => {
-      if (order.dateIso) return order.dateIso === todayIso;
-
-      if (order.date) {
-        const parsed = Date.parse(order.date);
-
-        if (!Number.isNaN(parsed)) {
-          return Services.getBusinessDate(new Date(parsed)) === todayIso;
-        }
-      }
-
-      return false;
-    });
+    const todaysOrders = rawOrders.filter((order) => {return true});
 
     if (todaysOrders.length === 0) {
       alert("No orders found for today.");
