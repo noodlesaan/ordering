@@ -26,3 +26,4 @@ http://localhost:6001
 
 - [Tailwind CSS](https://tailwindcss.com/) v3.4.19
 - [Vazirmatn Font](https://fonts.google.com/specimen/Vazirmatn)
+- [Font Awesome](https://fontawesome.com/) v7.2.0
