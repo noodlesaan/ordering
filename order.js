@@ -368,7 +368,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
         <div class="flex gap-3 items-center">
           <span>${formatCurrency(item.itemTotal)}</span>
-          <button class="delete-btn text-red-600">🗑️</button>
+          <button class="delete-btn text-red-600" aria-label="حذف سفارش">
+            <i class="fa-solid fa-trash" aria-hidden="true"></i>
+          </button>
         </div>
       `;
 
