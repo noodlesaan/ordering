@@ -221,17 +221,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     header.className = "flex justify-between items-center p-4 border-b";
     header.innerHTML = `
       <h2 class="text-xl font-bold">خلاصه فروش روز</h2>
-      <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-xl">✖</button>
+      <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-xl" aria-label="بستن">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
     `;
 
     const controls = document.createElement("div");
     controls.className = "flex justify-between items-center p-4 border-b bg-gray-50";
     controls.innerHTML = `
       <div class="flex gap-2">
-        <button id="marginMinus" class="px-3 py-2 border rounded bg-white hover:bg-gray-100">➖ Margin (${margin}mm)</button>
-        <button id="marginPlus" class="px-3 py-2 border rounded bg-white hover:bg-gray-100">➕ Margin (${margin}mm)</button>
+        <button id="marginMinus" class="px-3 py-2 border rounded bg-white hover:bg-gray-100">
+          <i class="fa-solid fa-minus" aria-hidden="true"></i>
+          Margin (${margin}mm)
+        </button>
+
+        <button id="marginPlus" class="px-3 py-2 border rounded bg-white hover:bg-gray-100">
+          <i class="fa-solid fa-plus" aria-hidden="true"></i>
+          Margin (${margin}mm)
+        </button>
       </div>
-      <button id="printNow" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">🖨️ Print</button>
+      <button id="printNow" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+        <i class="fa-solid fa-print" aria-hidden="true"></i>
+        Print
+      </button>
     `;
 
     const previewContainer = document.createElement("div");
@@ -268,8 +280,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function applyMargin() {
       paperPreview.style.padding = `${margin}mm`;
-      controls.querySelector("#marginPlus").textContent = `➕ Margin (${margin}mm)`;
-      controls.querySelector("#marginMinus").textContent = `➖ Margin (${margin}mm)`;
+      controls.querySelector("#marginPlus").innerHTML = `<i class="fa-solid fa-plus" aria-hidden="true"></i> Margin (${margin}mm)`;
+      controls.querySelector("#marginMinus").innerHTML = `<i class="fa-solid fa-minus" aria-hidden="true"></i> Margin (${margin}mm)`;
     }
 
     applyMargin();
@@ -432,7 +444,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const printBtn = document.createElement("button");
     printBtn.className =
       "text-white bg-blue-600 hover:bg-blue-400 text-sm font-medium p-3 rounded-lg";
-    printBtn.textContent = "🖨️ پرینت سفارش";
+    printBtn.innerHTML = '<i class="fa-solid fa-print" aria-hidden="true"></i> پرینت سفارش';
 
     printBtn.onclick = () => openPrintModal(order);
 
@@ -462,7 +474,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       header.className = "flex justify-between items-center p-4 border-b";
       header.innerHTML = `
         <h2 class="text-xl font-bold">Order #${order.orderNumber}</h2>
-        <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-xl">✖</button>
+        <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-xl" aria-label="بستن">
+          <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+        </button>
       `;
 
       // Controls
@@ -470,10 +484,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       controls.className = "flex justify-between items-center p-4 border-b bg-gray-50";
       controls.innerHTML = `
         <div class="flex gap-2">
-          <button id="marginMinus" class="px-3 py-2 border rounded bg-white hover:bg-gray-100">➖ Margin (${margin}mm)</button>
-          <button id="marginPlus" class="px-3 py-2 border rounded bg-white hover:bg-gray-100">➕ Margin (${margin}mm)</button>
+          <button id="marginMinus" class="px-3 py-2 border rounded bg-white hover:bg-gray-100">
+            <i class="fa-solid fa-minus" aria-hidden="true"></i>
+            Margin (${margin}mm)
+          </button>
+
+          <button id="marginPlus" class="px-3 py-2 border rounded bg-white hover:bg-gray-100">
+            <i class="fa-solid fa-plus" aria-hidden="true"></i>
+            Margin (${margin}mm)
+          </button>
         </div>
-        <button id="printNow" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">🖨️ Print</button>
+        <button id="printNow" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+          <i class="fa-solid fa-print" aria-hidden="true"></i>
+          Print
+        </button>
       `;
 
       // Paper preview container
@@ -542,8 +566,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Update margin display and preview
       function applyMargin() {
         paperPreview.style.padding = `${margin}mm`;
-        document.getElementById("marginPlus").textContent = `➕ Margin (${margin}mm)`;
-        document.getElementById("marginMinus").textContent = `➖ Margin (${margin}mm)`;
+        controls.querySelector("#marginPlus").innerHTML = `<i class="fa-solid fa-plus" aria-hidden="true"></i> Margin (${margin}mm)`;
+        controls.querySelector("#marginMinus").innerHTML = `<i class="fa-solid fa-minus" aria-hidden="true"></i> Margin (${margin}mm)`;
       }
 
       applyMargin();
