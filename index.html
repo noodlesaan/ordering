@@ -8,6 +8,7 @@
     <!-- Local vendor CSS (single merged file) -->
     <link rel="stylesheet" href="assets/tailwind.min.css" />
     <!-- Local font css (create assets/fonts.css + place font files under assets/fonts/) -->
+    <link rel="stylesheet" href="assets/fontawesome/css/all.min.css" />
     <link rel="stylesheet" href="assets/fonts.css" />
     <link rel="stylesheet" href="./main.css?v=2" />
     <link rel="manifest" href="manifest.json">
@@ -86,7 +87,8 @@
     <!-- Header -->
     <header class="text-center mb-6">
       <h1 class="text-3xl font-extrabold text-blue-700 mb-2">
-        🍽️ سیستم ثبت سفارش غذا
+        <i class="fa-solid fa-utensils" aria-hidden="true"></i>
+        سیستم ثبت سفارش غذا
       </h1>
       <p class="text-gray-700 text-lg">
         لطفاً غذا و تاپینگ‌های مورد نظر خود را انتخاب کنید.
@@ -97,7 +99,8 @@
         href="pastOrders.html"
         class="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition"
       >
-        📜 مشاهده سفارشات قبلی
+        <i class="fa-solid fa-clock-rotate-left" aria-hidden="true"></i>
+        مشاهده سفارشات قبلی
       </a>
     </div>
     </header>
@@ -129,7 +132,8 @@
       class="bg-white rounded-lg shadow-md mt-8 p-4 w-full mx-auto"
     >
       <h2 class="text-2xl font-bold mb-4 text-center text-gray-800">
-        🧾 فاکتور سفارش
+        <i class="fa-solid fa-file-invoice" aria-hidden="true"></i>
+        فاکتور سفارش
       </h2>
       <ul id="orderList" class="space-y-2"></ul>
 
@@ -148,7 +152,8 @@
         id="submitOrder"
         class="bg-green-600 text-white px-8 py-2 rounded-lg hover:bg-green-700 transition"
       >
-        ثبت کل سفارش ✅
+        ثبت کل سفارش
+        <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
       </button>
     </div>
 

@@ -1,5 +1,5 @@
 // Bump this version whenever you deploy changes to HTML/JS/CSS/JSON.
-const CACHE_NAME = 'ordering-app-v1.1.0';
+const CACHE_NAME = 'ordering-app-v1.1.1';
 
 const ASSETS_TO_CACHE = [
   'index.html',
@@ -24,6 +24,11 @@ const ASSETS_TO_CACHE = [
   'assets/fonts/Vazirmatn-Black.ttf',
   'assets/icons/icon-192.png',
   'assets/icons/icon-512.png',
+  'assets/fontawesome/css/all.min.css',
+  'assets/fontawesome/webfonts/fa-brands-400.woff2',
+  'assets/fontawesome/webfonts/fa-regular-400.woff2',
+  'assets/fontawesome/webfonts/fa-solid-900.woff2',
+  'assets/fontawesome/webfonts/fa-v4compatibility.woff2',
 ];
 
 self.addEventListener('install', (event) => {
