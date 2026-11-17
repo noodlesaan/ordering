@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const todaysOrders = rawOrders.filter((order) => {return true});
 
     if (todaysOrders.length === 0) {
-      alert("No orders found for today.");
+      alert("برای امروز هیچ سفارشی ثبت نشده است.");
       return;
     }
 
@@ -232,17 +232,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       <div class="flex gap-2">
         <button id="marginMinus" class="px-3 py-2 border rounded bg-white hover:bg-gray-100">
           <i class="fa-solid fa-minus" aria-hidden="true"></i>
-          Margin (${margin}mm)
+          حاشیه (${margin} میلی‌متر)
         </button>
 
         <button id="marginPlus" class="px-3 py-2 border rounded bg-white hover:bg-gray-100">
           <i class="fa-solid fa-plus" aria-hidden="true"></i>
-          Margin (${margin}mm)
+          حاشیه (${margin} میلی‌متر)
         </button>
       </div>
       <button id="printNow" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
         <i class="fa-solid fa-print" aria-hidden="true"></i>
-        Print
+        چاپ
       </button>
     `;
 
@@ -280,8 +280,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function applyMargin() {
       paperPreview.style.padding = `${margin}mm`;
-      controls.querySelector("#marginPlus").innerHTML = `<i class="fa-solid fa-plus" aria-hidden="true"></i> Margin (${margin}mm)`;
-      controls.querySelector("#marginMinus").innerHTML = `<i class="fa-solid fa-minus" aria-hidden="true"></i> Margin (${margin}mm)`;
+      controls.querySelector("#marginPlus").innerHTML = `<i class="fa-solid fa-plus" aria-hidden="true"></i> حاشیه (${margin} میلی‌متر)`;
+      controls.querySelector("#marginMinus").innerHTML = `<i class="fa-solid fa-minus" aria-hidden="true"></i> حاشیه (${margin} میلی‌متر)`;
     }
 
     applyMargin();
@@ -486,17 +486,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="flex gap-2">
           <button id="marginMinus" class="px-3 py-2 border rounded bg-white hover:bg-gray-100">
             <i class="fa-solid fa-minus" aria-hidden="true"></i>
-            Margin (${margin}mm)
+            حاشیه (${margin} میلی‌متر)
           </button>
 
           <button id="marginPlus" class="px-3 py-2 border rounded bg-white hover:bg-gray-100">
             <i class="fa-solid fa-plus" aria-hidden="true"></i>
-            Margin (${margin}mm)
+            حاشیه (${margin} میلی‌متر)
           </button>
         </div>
         <button id="printNow" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
           <i class="fa-solid fa-print" aria-hidden="true"></i>
-          Print
+          چاپ
         </button>
       `;
 
@@ -566,8 +566,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Update margin display and preview
       function applyMargin() {
         paperPreview.style.padding = `${margin}mm`;
-        controls.querySelector("#marginPlus").innerHTML = `<i class="fa-solid fa-plus" aria-hidden="true"></i> Margin (${margin}mm)`;
-        controls.querySelector("#marginMinus").innerHTML = `<i class="fa-solid fa-minus" aria-hidden="true"></i> Margin (${margin}mm)`;
+        controls.querySelector("#marginPlus").innerHTML = `<i class="fa-solid fa-plus" aria-hidden="true"></i> حاشیه (${margin} میلی‌متر)`;
+        controls.querySelector("#marginMinus").innerHTML = `<i class="fa-solid fa-minus" aria-hidden="true"></i> حاشیه (${margin} میلی‌متر)`;
       }
 
       applyMargin();
