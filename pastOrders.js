@@ -473,7 +473,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const header = document.createElement("div");
       header.className = "flex justify-between items-center p-4 border-b";
       header.innerHTML = `
-        <h2 class="text-xl font-bold">Order #${order.orderNumber}</h2>
+        <h2 class="text-xl font-bold">سفارش شماره ${order.orderNumber}</h2>
         <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-xl" aria-label="بستن">
           <i class="fa-solid fa-xmark" aria-hidden="true"></i>
         </button>
