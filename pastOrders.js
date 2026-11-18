@@ -444,7 +444,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const printBtn = document.createElement("button");
     printBtn.className =
       "text-white bg-blue-600 hover:bg-blue-400 text-sm font-medium p-3 rounded-lg";
-    printBtn.innerHTML = '<i class="fa-solid fa-print" aria-hidden="true"></i> پرینت سفارش';
+    printBtn.innerHTML = '<i class="fa-solid fa-print" aria-hidden="true"></i> چاپ سفارش';
 
     printBtn.onclick = () => openPrintModal(order);
 
