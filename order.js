@@ -59,9 +59,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const menuContainer = document.getElementById("menuContainer");
   const submitFoodBtn = document.getElementById("submitFood");
   const submitOrderBtn = document.getElementById("submitOrder");
-  const submitConfirmation = document.getElementById("submitConfirmation");
-  const confirmSubmitOrderBtn = document.getElementById("confirmSubmitOrder");
-  const cancelSubmitOrderBtn = document.getElementById("cancelSubmitOrder");
   const orderList = document.getElementById("orderList");
   const orderNumberEl = document.getElementById("orderNumber");
 
@@ -111,8 +108,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       updateOrderList();
       submitFoodBtn.onclick = handleAddItem;
       submitOrderBtn.onclick = handleSubmitOrder;
-      confirmSubmitOrderBtn.onclick = confirmOrderSubmission;
-      cancelSubmitOrderBtn.onclick = () => submitConfirmation.classList.add("hidden");
       // delegate delete button clicks to the list container so handlers survive DOM restores
       orderList.removeEventListener('click', orderList._delegatedClickHandler || (()=>{}));
       orderList._delegatedClickHandler = function (e) {
@@ -282,7 +277,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Prevent completely empty items
     if (!ramenObj && extras.length === 0) {
-      return alert("لطفا حداقل یک مورد انتخاب کنید.");
+      Swal.fire({
+        text: "لطفا حداقل یک مورد انتخاب کنید.",
+        icon: "warning",
+        confirmButtonText: "باشه",
+      });
+      return;
     }
 
     const ramenPrice = ramenObj ? ramenObj.price : 0;
@@ -302,15 +302,30 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function handleSubmitOrder() {
-    if (!currentOrder.length) return alert("سفارشی ثبت نشده است.");
-    confirmSubmitOrderBtn.disabled = false;
-    submitConfirmation.classList.remove("hidden");
+    if (!currentOrder.length) {
+      Swal.fire({
+        text: "سفارشی ثبت نشده است.",
+        icon: "warning",
+        confirmButtonText: "باشه",
+      });
+      return;
+    }
+
+    Swal.fire({
+      title: "آیا از ثبت این سفارش مطمئن هستید؟",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "بله",
+      cancelButtonText: "نه",
+      reverseButtons: true,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        confirmOrderSubmission();
+      }
+    });
   }
 
   function confirmOrderSubmission() {
-    if (confirmSubmitOrderBtn.disabled) return;
-    confirmSubmitOrderBtn.disabled = true;
-    submitConfirmation.classList.add("hidden");
     const orders = JSON.parse(localStorage.getItem("orders")) || [];
 
     orders.push({
