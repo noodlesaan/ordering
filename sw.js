@@ -29,6 +29,8 @@ const ASSETS_TO_CACHE = [
   'assets/fontawesome/webfonts/fa-regular-400.woff2',
   'assets/fontawesome/webfonts/fa-solid-900.woff2',
   'assets/fontawesome/webfonts/fa-v4compatibility.woff2',
+  'assets/sweetalert2/sweetalert2.min.css',
+  'assets/sweetalert2/sweetalert2.min.js',
 ];
 
 self.addEventListener('install', (event) => {
