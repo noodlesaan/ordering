@@ -111,7 +111,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const todaysOrders = rawOrders.filter((order) => {return true});
 
     if (todaysOrders.length === 0) {
-      alert("برای امروز هیچ سفارشی ثبت نشده است.");
+      Swal.fire({
+        text: "برای امروز هیچ سفارشی ثبت نشده است.",
+        icon: "warning",
+        confirmButtonText: "باشه",
+      });
       return;
     }
 
