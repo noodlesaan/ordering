@@ -51,10 +51,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function handleSWWaiting(reg) {
-    const banner = document.getElementById('updateBanner');
-    const btn = document.getElementById('updateReloadBtn');
-    if (banner) banner.classList.remove('hidden');
-    if (btn) btn.onclick = () => { reg.waiting.postMessage('SKIP_WAITING'); };
+    Swal.fire({
+      text: "نسخه جدید آماده است.",
+      icon: "info",
+      confirmButtonText: "بروزرسانی",
+    }).then((result) => {
+      if (result.isConfirmed && reg.waiting) {
+        reg.waiting.postMessage('SKIP_WAITING');
+      }
+    });
   }
 
   // Clear yesterday's orders when a new business day starts (5 AM rollover).
